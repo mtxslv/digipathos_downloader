@@ -15,9 +15,7 @@ Additionally, you will need the python module *requests*. If you haven't already
 
 ## Installation
 ~~With [git](https://git-scm.com/downloads) installed, you can install the downloader with:~~
-~~```shell
-~~git clone https://github.com/georg-un/digipathos-plant-disease-img-db-downloader~~
-~~cd digipathos-plant-disease-img-db-downloader~~
+```shell
 ```
 
 Just do:
