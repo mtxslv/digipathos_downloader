@@ -14,10 +14,21 @@ You will need **python 3.6 or higher** installed.
 Additionally, you will need the python module *requests*. If you haven't already installed it, install it with `pip install requests`.
 
 ## Installation
-With [git](https://git-scm.com/downloads) installed, you can install the downloader with:
+~~With [git](https://git-scm.com/downloads) installed, you can install the downloader with:~~
+~~```shell
+~~git clone https://github.com/georg-un/digipathos-plant-disease-img-db-downloader~~
+~~cd digipathos-plant-disease-img-db-downloader~~
+```
+
+Just do:
 ```shell
-git clone https://github.com/georg-un/digipathos-plant-disease-img-db-downloader
-cd digipathos-plant-disease-img-db-downloader
+pip install git+https://github.com/mtxslv/digipathos_downloader
+```
+
+or
+
+```shell
+poetry add git+https://github.com/mtxslv/digipathos_downloader
 ```
 
 ## Usage
