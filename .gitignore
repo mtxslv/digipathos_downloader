@@ -9,9 +9,11 @@ __pycache__/
 # Distribution / packaging
 .Python
 env/
+.venv/
+.pytest_cache/
 build/
 develop-eggs/
-dist/
+#dist/
 downloads/
 eggs/
 .eggs/
