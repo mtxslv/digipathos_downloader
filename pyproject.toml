@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "digipathos-downloader"
 version = "0.1.0"
-description = ""
+description = "Digipathos plant disease image database (EMBRAPA) downloader based on georg-un project"
 authors = ["Mateus Assis <mateus.d.assis.silva@gmail.com>"]
 readme = "README.md"
 packages = [{include = "digipathos_downloader"}]
