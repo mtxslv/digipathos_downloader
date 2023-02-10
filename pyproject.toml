@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "digipathos-downloader"
+version = "0.1.0"
+description = ""
+authors = ["Mateus Assis <mateus.d.assis.silva@gmail.com>"]
+readme = "README.md"
+packages = [{include = "digipathos_downloader"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+requests = "^2.28.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
