@@ -1,3 +1,9 @@
+# Intro
+
+This fork makes [georg-un's installer](https://github.com/georg-un/digipathos-plant-disease-img-db-downloader) installable by pip or poetry. That is, it is not necessary to git-clone the repo. Just ```poetry add``` it and that is it..
+
+**original docs below**
+
 # Digipathos Plant Disease Image Database Downloader
 This project is a downloader for the plant disease image database provided by EMBRAPA (Brazilian Agricultural Research Corporation). Further information on the database can be found in [this](https://doi.org/10.1016/j.biosystemseng.2018.05.013) paper.
 
