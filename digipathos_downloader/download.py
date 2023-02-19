@@ -1,8 +1,9 @@
-import requests
 import os
+import shutil
 import sys
 import zipfile
-import shutil
+
+import requests
 
 BASE_URL = "https://www.digipathos-rep.cnptia.embrapa.br"
 LIST_URL = BASE_URL + "/jspui/zipsincollection/123456789/3"
@@ -12,32 +13,74 @@ DATA_DIR = WORKING_DIR + "/plant-disease-db"
 TMP_DIR = DATA_DIR + "/tmp/"
 
 
-def create_dir(path):
+def create_dir(path) -> None:
+    """Create directory in a given path.
+
+    Args:
+        path (str): the directory to be created. 
+
+    Raises:
+        OSError: raised when the directory cannot be created.
+    """
     try:
         os.mkdir(path)
     except OSError as e:
         raise OSError(f"{e}\nFailed to create directory: {path}")
 
 
-def create_basic_folder_structure(verbose):
+def create_basic_folder_structure(root_dir: str = '.', 
+                                  dataset_dir: str = 'plant-disease-db', 
+                                  volatile_dir: str = 'tmp',  
+                                  verbose: str = False) -> None:
+    """Create folder structure for the dataset download process.
+
+    Args:
+        root_dir (str, optional): the name of the  root directory where dataset_dir will be created. Defaults to '.'.
+        dataset_dir (str, optional): the name of the  directory where the images will be downloaded to. Defaults to 'plant-disease-db'.
+        volatile_dir (str, optional): the name of the directory where temporary files are kept. It is defined inside dataset_dir. It is . Defaults to 'tmp'.
+        verbose (str, optional): _description_. Defaults to False.
+
+    Raises:
+        OSError: raised when the directories cannot be created.
+    """
+    data_dir = root_dir + '/' + dataset_dir
+    tmp_dir = data_dir + '/' + volatile_dir
     if verbose:
         print("Setting up basic folder structure...")
     try:
-        create_dir(DATA_DIR)
-        create_dir(TMP_DIR)
+        create_dir(data_dir)
+        create_dir(tmp_dir)
     except OSError as e:
         print(f"{e}\nUnable to create basic folder structure. Please make sure the directory exists and is empty.")
         sys.exit(1)
 
 
-def fetch_zips_table(name_filter, verbose):
+def fetch_zips_table(name_filter: str = "cropped", 
+                     verbose: str = False,
+                     base_url: str = "https://www.digipathos-rep.cnptia.embrapa.br",
+                     list_url: str = "/jspui/zipsincollection/123456789/3"):
+    """Fetch Zips table. Executes a get request to the digipathos website requesting the the images metadata. 
+
+    Args:
+        name_filter (str): which images to download: cropped only, original only, or all. Defaults to 'cropped'.
+        verbose (str, optional): notify about the process. Defaults to False.
+        base_url (str, optional): digipathos base url. Defaults to "https://www.digipathos-rep.cnptia.embrapa.br".
+        list_url (str, optional): digipathos list url. Defaults to "/jspui/zipsincollection/123456789/3".
+
+    Returns: 
+        zips_table: a list containing the images' metadata.
+
+    Raises:
+        RequestException: raised when the process is unable to fetch zip table from a given image url.
+    """
+    url = base_url + list_url
     if verbose:
         print("Downloading table containing remote image DB information...")
     query_params = {"offset": 0, "limit": 100000}
     try:
-        response = requests.get(LIST_URL, query_params).json()
+        response = requests.get(url, query_params).json()
     except requests.exceptions.RequestException as e:
-        print(f"{e}\nUnable to fetch ZIP's table from {LIST_URL}")
+        print(f"{e}\nUnable to fetch ZIP's table from {url}")
         sys.exit(1)
     else:
         zips_table = response["bitstreams"]
