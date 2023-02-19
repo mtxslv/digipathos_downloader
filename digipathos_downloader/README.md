@@ -54,7 +54,15 @@ Create tests for the module and add them in the `./test` folder. Notice [the ord
 - native libs
 - installed libs
 - your lib
+
 And they are called alphabetically
 
 ## ADD TEST
 
+Even though the original code was working perfectly, it was developed to be called through command-line. In order to use it on a pipeline it would be necessary to refactor it. Necessary modifications:
+- The global variables (BASE_URL, LIST_URL, WORKING_DIR, DATA_DIR, and TMP_DIR) must become local (function arguments);
+- The functions must be more customizable. For instance, it is necessary to change the target directory to download the samples (just in case we need to test something). It is also necessary to make the urls changeable (as function arguments), just in case the website changes in the future;
+- Failed downloads must be somewhat registered as code (not just notified). Thus, it is necessary to make the functions return the broken urls;
+- Add docstrings to ease understanding;
+
+All this context further reaffirm the need for tests (something originally missing).
