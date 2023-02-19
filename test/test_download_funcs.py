@@ -70,3 +70,16 @@ def test_download_zip(short_zips_table):
     # remove generated elements by test 
     downloaded_file.unlink()
     expected_tmp_folder.rmdir()
+
+def test_download_zip_return(short_zips_table):
+    # gets the metadata from one sample
+    sample = short_zips_table[0]
+
+    # broken link
+    broken_link = 'https://www.digipathos-rep.cnptia.embrapa.br/jurubeba'
+
+    # download that sample
+    not_downloaded = download_zip('jurubeba', 
+                                  sample["name"])
+
+    assert not_downloaded == broken_link
