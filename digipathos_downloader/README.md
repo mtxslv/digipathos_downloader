@@ -42,10 +42,19 @@ The _run.py_ script does the following:
 
 # TURNING THE PROJECT INTO A LIB
 
+## FOLDER STUFF
 The first step is to move all necessary code into a proper folder. Thus, the files:
 - `download.py`;
 - `run.py`; and
 - `setup_ckecks.py`
+
 are moved into `./digipathos_downloader/`. An `__init__.py` is added too
 
+Create tests for the module and add them in the `./test` folder. Notice [the order the dependencies are called](https://code.visualstudio.com/docs/python/editing):
+- native libs
+- installed libs
+- your lib
+And they are called alphabetically
+
+## ADD TEST
 
