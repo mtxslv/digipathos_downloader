@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 from digipathos_downloader.download import (create_basic_folder_structure,
-                                            create_dir)
+                                            create_dir, fetch_zips_table)
 
 
 def test_create_dir():
@@ -26,3 +26,10 @@ def test_create_basic_folder_structure():
     assert expected_tmp_folder.exists()
     expected_tmp_folder.rmdir()
     expected_dataset_folder.rmdir()
+
+def test_fetch_zips_table():
+    """assert fetch_zip_table generates a non-empty list.
+    """
+    zips_table = fetch_zips_table('all')
+    assert len(zips_table) != 0
+    assert type(zips_table) == list
