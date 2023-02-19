@@ -166,7 +166,7 @@ def test_validate_downloads(short_zips_table):
     assert n_zips_in_tmp == len(short_zips_table)
     assert len(zero_size_files) == 0
 
-    # get downlaoded objects
+    # get downloaded objects
     downloaded_elements = list(tmp_folder.iterdir())
 
     # remove downloaded samples and folder
@@ -174,3 +174,27 @@ def test_validate_downloads(short_zips_table):
         file.unlink()
     tmp_folder.rmdir()
 
+def test_validate_downloads_null_files(short_zips_table):
+
+    # create tmp folder
+    tests_folder = Path(__name__).absolute().parent / 'test'
+    tmp_folder = tests_folder / 'tmp'    
+    tmp_folder.mkdir()    
+
+    # create fake files
+    for file in short_zips_table:
+        filepath = tmp_folder / file['name']
+        filepath.touch()
+
+    # call download validation
+    n_zips_in_tmp, zero_size_files = validate_downloads(len(short_zips_table),
+                                                        str(tmp_folder),
+                                                        False)
+    
+    # assert file size is wrong
+    assert len(zero_size_files) == 3
+
+    # remove downloaded samples and folder
+    for file in tmp_folder.iterdir():
+        file.unlink()
+    tmp_folder.rmdir()
