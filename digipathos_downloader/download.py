@@ -143,11 +143,23 @@ def download_zip(relative_url: str,
               f"Please try to download it manually: {url_not_downloaded}")
         return url_not_downloaded
 
-def download_zips(zips_tbl, verbose):
+def download_zips(zips_tbl: list, 
+                  tmp_dir: str = '.',                                  
+                  verbose: bool = True,
+                  base_url: str = "https://www.digipathos-rep.cnptia.embrapa.br"):
+    not_downloaded = []
     for index, remote_zip_info in enumerate(zips_tbl):
         if verbose:
             print(f"Downloading ZIP-file {index+1}/{len(zips_tbl)}...")
-        download_zip(remote_zip_info["bsLink"], remote_zip_info["name"])
+        fail_download = download_zip(remote_zip_info["bsLink"], 
+                                     remote_zip_info["name"],
+                                     tmp_dir,
+                                     base_url)
+        if fail_download != None:
+            not_downloaded.append(fail_download)
+    if len(not_downloaded) > 0:
+        return not_downloaded
+        
 
 
 def validate_downloads(n_zips, verbose):
