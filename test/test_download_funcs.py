@@ -109,9 +109,12 @@ def test_download_zips(short_zips_table):
     tmp_folder.mkdir()
 
     # download samples
-    download_zips(short_zips_table,
-                  str(tmp_folder))
+    not_downloaded = download_zips(short_zips_table,
+                                   str(tmp_folder))
     
+    # assert all elements were succesfully downloaded:
+    assert not_downloaded == None
+
     # get downloaded objects
     downloaded_elements = list(tmp_folder.iterdir())
 
@@ -129,3 +132,15 @@ def test_download_zips(short_zips_table):
         file.unlink()
     tmp_folder.rmdir()
     
+def test_no_zips_downloaded(broken_zips_table):
+    # create tmp folder
+    tests_folder = Path(__name__).absolute().parent / 'test'
+    tmp_folder = tests_folder / 'tmp'    
+    tmp_folder.mkdir()
+
+    # download samples
+    not_downloaded = download_zips(broken_zips_table,
+                                   str(tmp_folder))
+    
+    # assert no element were downloaded:
+    assert len(not_downloaded) == 3    
