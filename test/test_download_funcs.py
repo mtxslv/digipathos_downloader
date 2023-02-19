@@ -57,15 +57,18 @@ def test_download_zip(short_zips_table):
     sample = short_zips_table[0]
 
     # download that sample
-    download_zip(sample["bsLink"], 
-                 sample["name"],
-                 str(expected_tmp_folder))
+    ok_url = download_zip(sample["bsLink"], 
+                         sample["name"],
+                         str(expected_tmp_folder))
 
     # get path for the downloaded sample
     downloaded_file = list(expected_tmp_folder.iterdir())[0]
     
     # assert the sample exists
     assert str(downloaded_file) == str(expected_tmp_folder / sample["name"])
+    
+    # assert if download is ok, function returns none
+    assert ok_url == None
     
     # remove generated elements by test 
     downloaded_file.unlink()
