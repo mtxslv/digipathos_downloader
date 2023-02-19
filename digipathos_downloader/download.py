@@ -104,11 +104,16 @@ def download_zip(relative_url: str,
     """Tries to download a sample (a zip file).
 
     Args:
-        relative_url (str): _description_
-        zip_name (str): _description_
-        tmp_dir (str): where the zip file is downloaded to.  
-        base_url (_type_, optional): _description_. Defaults to "https://www.digipathos-rep.cnptia.embrapa.br".
+        relative_url (str): the sample url to be downloaded.
+        zip_name (str): the sample name.
+        tmp_dir (str): where the zip file will be downloaded to.  
+        base_url (str, optional): digipathos base url. Defaults to "https://www.digipathos-rep.cnptia.embrapa.br".
+    
+    Returns:
+        url_not_downloaded (str): the url of a failed download. If download is successful, returns None.
     """
+    
+    url_not_downloaded = None
     attempts = 0
     max_attempts = 3
     while attempts < max_attempts:
@@ -124,16 +129,19 @@ def download_zip(relative_url: str,
             attempts += 1
 
     if attempts < max_attempts:
-        filename = TMP_DIR + zip_name
+        filename = tmp_dir + '/' + zip_name
         try:
             open(filename, "wb").write(response.content)
         except EnvironmentError as e:
-            print(f"{e}\nFailed to write {zip_name} to {TMP_DIR}\n"
-                  f"Please try to download it manually: {BASE_URL + relative_url}")
+            url_not_downloaded = base_url + '/' + relative_url
+            print(f"{e}\nFailed to write {zip_name} to {tmp_dir}\n"
+                  f"Please try to download it manually: {url_not_downloaded}")
+            return url_not_downloaded
     else:
-        print(f"{e}\nFailed to download {zip_name}\n"
-              f"Please try to download it manually: {BASE_URL + relative_url}")
-
+        url_not_downloaded = base_url + '/' + relative_url
+        print(f"\nFailed to download {zip_name}\n"
+              f"Please try to download it manually: {url_not_downloaded}")
+        return url_not_downloaded
 
 def download_zips(zips_tbl, verbose):
     for index, remote_zip_info in enumerate(zips_tbl):
