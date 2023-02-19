@@ -46,3 +46,27 @@ def test_fetch_zips_table():
     zips_table = fetch_zips_table('all')
     assert len(zips_table) != 0
     assert type(zips_table) == list
+
+def test_download_zip(short_zips_table):
+    # create tmp folder
+    tests_folder = Path(__name__).absolute().parent / 'test'
+    expected_tmp_folder = tests_folder / 'tmp'    
+    expected_tmp_folder.mkdir()
+    
+    # gets the metadata from one sample
+    sample = short_zips_table[0]
+
+    # download that sample
+    download_zip(sample["bsLink"], 
+                 sample["name"],
+                 str(expected_tmp_folder))
+
+    # get path for the downloaded sample
+    downloaded_file = list(expected_tmp_folder.iterdir())[0]
+    
+    # assert the sample exists
+    assert str(downloaded_file) == str(expected_tmp_folder / sample["name"])
+    
+    # remove generated elements by test 
+    downloaded_file.unlink()
+    expected_tmp_folder.rmdir()
