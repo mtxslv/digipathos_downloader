@@ -21,3 +21,25 @@ def short_zips_table():
          'name': 'Abacaxi (Pineapple) - Podridão (Black Rot) - 1.zip',
          'format': 'ZIP'}]
     return zips_table
+
+@pytest.fixture
+def broken_zips_table():
+    """zips table with unvalid links.
+
+    Returns:
+        broken_zips: (list): a list containing unvalid sample metadata.
+    """
+    broken_zips = [
+        {'size': '636.43 kB',
+         'bsLink': '/this_is_not_a_link',
+         'name': 'Abacaxi (Pineapple) - Broca (Pineapple Fruit Borer) - 1.zip',
+         'format': 'ZIP'},
+        {'size': '20.45 MB',
+         'bsLink': '/no_link_here',
+         'name': 'Abacaxi (Pineapple) - Fusariose (Fusariose) - 1.zip',
+         'format': 'ZIP'},
+        {'size': '17.01 MB',
+         'bsLink': 'empty_empty',
+         'name': 'Abacaxi (Pineapple) - Podridão (Black Rot) - 1.zip',
+         'format': 'ZIP'}]
+    return broken_zips
