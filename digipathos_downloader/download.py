@@ -28,23 +28,24 @@ def create_dir(path) -> None:
         raise OSError(f"{e}\nFailed to create directory: {path}")
 
 
-def create_basic_folder_structure(root_dir: str = '.', 
-                                  dataset_dir: str = 'plant-disease-db', 
+def create_basic_folder_structure(dataset_dir: str = 'plant-disease-db', 
                                   volatile_dir: str = 'tmp',  
                                   verbose: str = False) -> None:
     """Create folder structure for the dataset download process.
 
     Args:
-        root_dir (str, optional): the name of the  root directory where dataset_dir will be created. Defaults to '.'.
         dataset_dir (str, optional): the name of the  directory where the images will be downloaded to. Defaults to 'plant-disease-db'.
-        volatile_dir (str, optional): the name of the directory where temporary files are kept. It is defined inside dataset_dir. It is . Defaults to 'tmp'.
-        verbose (str, optional): _description_. Defaults to False.
+        volatile_dir (str, optional): the name of the directory where temporary files are kept. Cannot be equal to dataset_dir. Defaults to 'tmp'.
+        verbose (str, optional): notify the user about the download progress. Defaults to False.
 
     Raises:
         OSError: raised when the directories cannot be created.
     """
-    data_dir = root_dir + '/' + dataset_dir
-    tmp_dir = data_dir + '/' + volatile_dir
+    if dataset_dir == volatile_dir:
+        raise ValueError('Directories cannot be the same.')
+    data_dir = dataset_dir
+    tmp_dir = volatile_dir
+
     if verbose:
         print("Setting up basic folder structure...")
     try:
@@ -96,12 +97,23 @@ def fetch_zips_table(name_filter: str = "cropped",
             return zips_table
 
 
-def download_zip(relative_url, zip_name):
+def download_zip(relative_url: str, 
+                 zip_name: str, 
+                 tmp_dir: str = '.',                 
+                 base_url: str = "https://www.digipathos-rep.cnptia.embrapa.br"):
+    """Tries to download a sample (a zip file).
+
+    Args:
+        relative_url (str): _description_
+        zip_name (str): _description_
+        tmp_dir (str): where the zip file is downloaded to.  
+        base_url (_type_, optional): _description_. Defaults to "https://www.digipathos-rep.cnptia.embrapa.br".
+    """
     attempts = 0
     max_attempts = 3
     while attempts < max_attempts:
         try:
-            response = requests.get(BASE_URL + relative_url)
+            response = requests.get(base_url + relative_url)
             if not response.ok:
                 print(f"Error while downloading {zip_name}.\Retrying...")
                 attempts += 1
@@ -162,6 +174,19 @@ def unpack_zips(verbose):
 def remove_tmp_dir():
     shutil.rmtree(TMP_DIR)
 
+def get_dataset(name_filter, verbose):
+    """Download function for python code.
+
+    Args:
+        name_filter (_type_): _description_
+        verbose (_type_): _description_
+    """
+    create_basic_folder_structure(verbose=verbose)
+    zips_table = fetch_zips_table(name_filter=name_filter, verbose=verbose)
+    download_zips(zips_table, verbose=verbose)
+    validate_downloads(len(zips_table), verbose=verbose)
+    unpack_zips(verbose=verbose)
+    remove_tmp_dir()    
 
 def main(name_filter, verbose):
     create_basic_folder_structure(verbose=verbose)
