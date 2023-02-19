@@ -3,8 +3,11 @@ from pathlib import Path
 import pytest
 
 from digipathos_downloader.download import (create_basic_folder_structure,
-                                            create_dir, download_zip, download_zips, 
-                                            fetch_zips_table)
+                                            create_dir, 
+                                            download_zip, 
+                                            download_zips, 
+                                            fetch_zips_table, 
+                                            validate_downloads)
 
 
 def test_create_dir():
@@ -144,3 +147,30 @@ def test_no_zips_downloaded(broken_zips_table):
     
     # assert no element were downloaded:
     assert len(not_downloaded) == 3    
+
+def test_validate_downloads(short_zips_table):
+    # create tmp folder
+    tests_folder = Path(__name__).absolute().parent / 'test'
+    tmp_folder = tests_folder / 'tmp'    
+    tmp_folder.mkdir()
+
+    # download samples
+    download_zips(short_zips_table,
+                  str(tmp_folder))
+
+    # call download validation
+    n_zips_in_tmp, zero_size_files = validate_downloads(len(short_zips_table),
+                                                        str(tmp_folder),
+                                                        False)
+    
+    assert n_zips_in_tmp == len(short_zips_table)
+    assert len(zero_size_files) == 0
+
+    # get downlaoded objects
+    downloaded_elements = list(tmp_folder.iterdir())
+
+    # remove downloaded samples and folder
+    for file in downloaded_elements:
+        file.unlink()
+    tmp_folder.rmdir()
+
