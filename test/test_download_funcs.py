@@ -3,7 +3,8 @@ from pathlib import Path
 import pytest
 
 from digipathos_downloader.download import (create_basic_folder_structure,
-                                            create_dir, fetch_zips_table)
+                                            create_dir, download_zip, download_zips, 
+                                            fetch_zips_table)
 
 
 def test_create_dir():
@@ -20,12 +21,24 @@ def test_create_basic_folder_structure():
     """
     tests_folder = Path(__name__).absolute().parent / 'test'
     expected_dataset_folder = tests_folder / 'plant-disease-db'
-    expected_tmp_folder = expected_dataset_folder / 'tmp'
-    create_basic_folder_structure(str(tests_folder))
+    expected_tmp_folder = tests_folder / 'tmp'
+    create_basic_folder_structure(str(expected_dataset_folder), 
+                                  str(expected_tmp_folder))
     assert expected_dataset_folder.exists()
     assert expected_tmp_folder.exists()
     expected_tmp_folder.rmdir()
     expected_dataset_folder.rmdir()
+
+def test_create_basic_folder_structure_error():
+    """assert similar folder names raise an error.
+    """
+    tests_folder = Path(__name__).absolute().parent / 'test'
+    expected_dataset_folder = tests_folder / 'folder'
+    expected_tmp_folder = tests_folder / 'folder'
+    with pytest.raises(ValueError):
+        create_basic_folder_structure(str(expected_dataset_folder), 
+                                      str(expected_tmp_folder))
+
 
 def test_fetch_zips_table():
     """assert fetch_zip_table generates a non-empty list.
