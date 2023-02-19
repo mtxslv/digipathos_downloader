@@ -48,10 +48,15 @@ def test_fetch_zips_table():
     assert type(zips_table) == list
 
 def test_download_zip(short_zips_table):
+    """assert it is possible to download a sample  
+
+    Args:
+        short_zips_table (list): mock fetch_zips return.
+    """
     # create tmp folder
     tests_folder = Path(__name__).absolute().parent / 'test'
-    expected_tmp_folder = tests_folder / 'tmp'    
-    expected_tmp_folder.mkdir()
+    tmp_folder = tests_folder / 'tmp'    
+    tmp_folder.mkdir()
     
     # gets the metadata from one sample
     sample = short_zips_table[0]
@@ -59,22 +64,27 @@ def test_download_zip(short_zips_table):
     # download that sample
     ok_url = download_zip(sample["bsLink"], 
                          sample["name"],
-                         str(expected_tmp_folder))
+                         str(tmp_folder))
 
     # get path for the downloaded sample
-    downloaded_file = list(expected_tmp_folder.iterdir())[0]
+    downloaded_file = list(tmp_folder.iterdir())[0]
     
     # assert the sample exists
-    assert str(downloaded_file) == str(expected_tmp_folder / sample["name"])
+    assert str(downloaded_file) == str(tmp_folder / sample["name"])
     
     # assert if download is ok, function returns none
     assert ok_url == None
     
     # remove generated elements by test 
     downloaded_file.unlink()
-    expected_tmp_folder.rmdir()
+    tmp_folder.rmdir()
 
 def test_download_zip_return(short_zips_table):
+    """assert return is not none when sample download fails.
+
+    Args:
+        short_zips_table (list): mock fetch_zips return.
+    """
     # gets the metadata from one sample
     sample = short_zips_table[0]
 
@@ -86,3 +96,36 @@ def test_download_zip_return(short_zips_table):
                                   sample["name"])
 
     assert not_downloaded == broken_link
+
+def test_download_zips(short_zips_table):
+    """assert download_zips can download samples
+
+    Args:
+        short_zips_table (list): mock fetch_zips return.
+    """
+    # create tmp folder
+    tests_folder = Path(__name__).absolute().parent / 'test'
+    tmp_folder = tests_folder / 'tmp'    
+    tmp_folder.mkdir()
+
+    # download samples
+    download_zips(short_zips_table,
+                  str(tmp_folder))
+    
+    # get downloaded objects
+    downloaded_elements = list(tmp_folder.iterdir())
+
+    # generate expected files names
+    expected_files = []
+    for expected in short_zips_table:
+        expected_file = tmp_folder / expected['name']
+        expected_files.append(expected_file)
+
+    # assert the samples were succesfully downloaded
+    assert set(downloaded_elements) == set(expected_files)
+
+    # remove downloaded samples and folder
+    for file in downloaded_elements:
+        file.unlink()
+    tmp_folder.rmdir()
+    
