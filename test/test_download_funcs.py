@@ -238,3 +238,34 @@ def test_files_extraction(short_zips_table):
 
     shutil.rmtree(tmp_folder)
     shutil.rmtree(plant_disease_folder)
+
+def test_unpack_fails():
+    """assert when unpack fails, the object name is returned
+    """
+
+    # create tmp folder
+    plant_disease_folder = Path(__name__).absolute().parent / 'plant-disease-db'
+    plant_disease_folder.mkdir()
+    tmp_folder = Path(__name__).absolute().parent / 'tmp'
+    tmp_folder.mkdir()
+
+    # create mock file
+    mock_zip = tmp_folder / 'mock.zip'
+    mock_zip.touch()
+
+    # tries to unpack an non-existent file
+    wrong_file = unpack_zip('wrong_file_path.zip',
+                            str(plant_disease_folder),
+                            str(tmp_folder))    
+    
+    # tries unpacking invalid zip
+    invalid_zip = unpack_zip('mock.zip',
+                             str(plant_disease_folder),
+                             str(tmp_folder))
+
+    # validate the messages were returned
+    assert type(wrong_file) == str
+    assert type(invalid_zip) == str
+
+    shutil.rmtree(plant_disease_folder)
+    shutil.rmtree(tmp_folder)
