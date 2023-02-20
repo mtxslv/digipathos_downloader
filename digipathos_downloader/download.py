@@ -175,6 +175,7 @@ def download_zips(zips_tbl: list,
 def validate_downloads(n_zips: int, 
                        dir: str, 
                        verbose: bool = True) -> tuple:
+                       
     """Validate if the samples were successfully downloaded. The number of files found in the repository is returned.
        Files with 0 bytes of size have their names returned. 
 
@@ -200,14 +201,28 @@ def validate_downloads(n_zips: int,
             print(f"WARNING: ZIP-file {filename} has a size of 0 bytes.")
     return n_zips_in_tmp, zero_size_files
 
-def unpack_zip(filename):
-    class_dir = DATA_DIR + "/" + filename[:-4]
+def unpack_zip(filename: str,
+               data_dir: str,
+               tmp_dir: str):
+    """Extracts a file to a given folder.
+
+    Args:
+        filename (str): name of the zip file to be extracted.
+        data_dir (str): path for the folder where the files will be extracted to.
+        tmp_dir (str): path for zip file origin.
+
+    Returns:
+        file_to_be_extracted (str): path for the file whose extraction failed. Not returned if extraction is succesful.
+    """
+    class_dir = data_dir + "/" + filename[:-4] # DATA_DIR = "/plant-disease-db"
     try:
         create_dir(class_dir)
-        with zipfile.ZipFile(TMP_DIR + filename, mode="r") as zip_contents:
+        file_to_be_extracted = tmp_dir + '/' + filename
+        with zipfile.ZipFile(file_to_be_extracted, mode="r") as zip_contents: # TMP_DIR = "/plant-disease-db/tmp"
             zip_contents.extractall(class_dir)
     except IOError as e:
         print(f"{e}\nSkipping unpacking of {filename}")
+        return file_to_be_extracted
 
 def unpack_zips(verbose):
     if verbose:
