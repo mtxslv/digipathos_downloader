@@ -254,8 +254,13 @@ def unpack_zips(folder: str,
         return failed_unzips_list
 
 
-def remove_tmp_dir():
-    shutil.rmtree(TMP_DIR)
+def remove_tmp_dir(dir: str):
+    """delete a temporary dir.
+
+    Args:
+        dir (str): the path for the temporary dir.
+    """
+    shutil.rmtree(dir)
 
 def get_dataset(name_filter, verbose):
     """Download function for python code.
