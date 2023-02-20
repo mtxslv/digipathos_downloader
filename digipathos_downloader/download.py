@@ -5,14 +5,6 @@ import zipfile
 
 import requests
 
-BASE_URL = "https://www.digipathos-rep.cnptia.embrapa.br"
-LIST_URL = BASE_URL + "/jspui/zipsincollection/123456789/3"
-
-WORKING_DIR = os.getcwd()
-DATA_DIR = WORKING_DIR + "/plant-disease-db"
-TMP_DIR = DATA_DIR + "/tmp/"
-
-
 def create_dir(path) -> None:
     """Create directory in a given path.
 
