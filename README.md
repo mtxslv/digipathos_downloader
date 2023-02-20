@@ -36,7 +36,7 @@ poetry add git+https://github.com/mtxslv/digipathos_downloader
 
 # It seems amazing 🤩! But I have no idea how to start 😓. What should I do? 🧐
 
-Once you have downloaded the project, you get the dataset using:
+Once you have downloaded the project, you can get the dataset using:
 
 ```python
 from pathlib import path
