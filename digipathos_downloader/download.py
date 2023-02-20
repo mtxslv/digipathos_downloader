@@ -227,11 +227,31 @@ def unpack_zip(filename: str,
         print(f"The following error occured:{e}")
         return filename
 
-def unpack_zips(verbose):
+def unpack_zips(folder: str,
+                target_folder: str,
+                verbose: bool = True):
+    """Extracts all files inside a given folder.
+
+    Args:
+        folder (str): the folder where the zip files are.
+        target_folder (str): the folder to unzip the files to.
+        verbose (bool): notify the user about the progress. Defaults to True.
+
+    Returns:
+        failed_unzips_list (list): a list of paths for the files whose unzipping failed. Return None if successful.
+    """            
+
+    failed_unzips_list = []            
     if verbose:
         print("Unpacking ZIP-files...")
-    for zip_file in os.listdir(TMP_DIR):
-        unpack_zip(zip_file)
+    for zip_file in os.listdir(folder):
+        returned_path = unpack_zip(zip_file,
+                                   target_folder,
+                                   folder)
+        if returned_path != None:
+            failed_unzips_list.append(returned_path)
+    if len(failed_unzips_list) > 0:
+        return failed_unzips_list
 
 
 def remove_tmp_dir():
