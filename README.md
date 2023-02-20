@@ -1,40 +1,67 @@
-# Intro
+# Welcome! 👋👋
 
-This fork makes [georg-un's installer](https://github.com/georg-un/digipathos-plant-disease-img-db-downloader) installable by pip or poetry. That is, it is not necessary to git-clone the repo. Just ```poetry add``` it and that is it..
+`digipathos_downloader` is a Python package for downloading [Embrapa's Digipathos Dataset](https://www.digipathos-rep.cnptia.embrapa.br/). In case you didn't know, the dataset contains images and descriptions of several vegetables diseases. The project is based on [george-un's](https://github.com/georg-un/digipathos-plant-disease-img-db-downloader). Kudos to him! Without his implemented logic, surely this project would not be possible.
 
-**original docs below**
+# 🤔 What does this lib do? 🤔
 
-# Digipathos Plant Disease Image Database Downloader
-This project is a downloader for the plant disease image database provided by EMBRAPA (Brazilian Agricultural Research Corporation). Further information on the database can be found in [this](https://doi.org/10.1016/j.biosystemseng.2018.05.013) paper.
+This lib is capable of fetching the original zipped files paths, and download and unzip them.
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/70ab11e8a9284cac8abdac662facb22f)](https://www.codacy.com/app/georg-un/embrapa-plant-disease-img-db-downloader?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=georg-un/embrapa-plant-disease-img-db-downloader&amp;utm_campaign=Badge_Grade)
+Available functions:
+- `create_basic_folder_structure`: creates a folder for the dataset (*dataset_dir/*) and another one for the downloads (_tmp/_). It calls `create_dir` to do it.
+- `fetch_zips_table`: fetches metadata from the files.
+- `download_zips`: uses the metadata to download the files themselves. Calls `download_zip` several times.
+- `validate_downloads`: validates the scheduled amount of downloads were done correctly.
+- `unpack_zips`: unzips the files in the _tmp/_ folder. Calls `unpack_zip` several times.
+- `remove_tmp_dir`: deletes the downloads folder.
+- `get_dataset`: orchestrates the download end-to-end.
 
-## Requirements
-You will need **python 3.6 or higher** installed.
-Additionally, you will need the python module *requests*. If you haven't already installed it, install it with `pip install requests`.
+Not available:
+- ~~`main`~~ (currently broken and untested): called during CLI. Inherited from the original project.
 
-## Installation
-~~With [git](https://git-scm.com/downloads) installed, you can install the downloader with:~~
-```shell
-```
+**Currently, CLI use is not available. The original project was meant to be called using CLI. Since this one aims to be employed in code, There is no plan to add CLI use.**
 
-Just do:
+#  👩‍💻 How to install? 👨‍💻
+
+In order to install the lib in a Linux based system, run:
+
 ```shell
 pip install git+https://github.com/mtxslv/digipathos_downloader
 ```
 
-or
+If you have Poetry available in your system, you can do:
 
 ```shell
 poetry add git+https://github.com/mtxslv/digipathos_downloader
 ```
 
-## Usage
-To use the downloader, open a terminal in the project folder and run the following command:
-```shell
-python3.6 run.py
+# It seems amazing 🤩! But I have no idea how to start 😓. What should I do? 🧐
+
+Once you have downloaded the project, you get the dataset using:
+
+```python
+from pathlib import path
+from digipathos_downloader import download
+
+my_folder = Path(__name__).absolute().parent # this is the folder you are in
+dataset_dir = my_folder / 'dataset_dir' # here is where the unzipped files will be 
+tmp_dir = my_folder / 'tmp' # this folder is used during installation and deleted once it is over
+
+# get the dataset
+download.get_dataset(str(dataset_dir),
+                     str(tmp_dir))
 ```
 
-**Note:** You can tell the script to download only original or cropped images.<br/>
-To download only original images use the command `python3.6 run.py original`.<br/>
-To download only cropped images use the command `python3.6 run.py cropped`.
+This must be suficient to download the dataset to ```dataset_dir```.
+
+More references regarding the use of the other functions are found in the [tests folder](./tests/) and in the functions docstrings.
+
+# ✍🏼 Some Last Words... ✍🏼
+
+Your feedback is much appreciated 🫂.
+
+If you developed something interesting using the lib, please consider showing the world. Don't be shy! You can tag [my Linkedin account](https://www.linkedin.com/in/mateus-assis-013a46140/) or [my Github](https://github.com/mtxslv/).
+
+If you find any bugs, or unexpected behaviour, submit an issue in the project. I'll answer it ASAP 😉
+
+#
+**_That said, happy coding!_**
