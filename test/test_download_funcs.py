@@ -8,6 +8,7 @@ from digipathos_downloader.download import (create_basic_folder_structure,
                                             download_zip, 
                                             download_zips, 
                                             fetch_zips_table, 
+                                            remove_tmp_dir,
                                             unpack_zip,
                                             unpack_zips,
                                             validate_downloads)
@@ -321,6 +322,11 @@ def test_unpack_several_zips(short_zips_table):
     shutil.rmtree(tmp_folder)
 
 def test_unzip_samples_fails(mocker):
+    """assert failing unzip returns non-empty list.
+
+    Args:
+        mocker (_type_): object to mock unpack_zip return
+    """
 
     # create tmp folder
     plant_disease_folder = Path(__name__).absolute().parent / 'test' / 'plant-disease-db'
@@ -351,3 +357,17 @@ def test_unzip_samples_fails(mocker):
     # clean the mess
     shutil.rmtree(plant_disease_folder)
     shutil.rmtree(tmp_folder)    
+
+def test_remove_tmp_dir():
+    """assert tmp dir removal.
+    """
+
+    # create tmp folder
+    tmp_folder = Path(__name__).absolute().parent / 'test' / 'tmp'
+    tmp_folder.mkdir() 
+    
+    # remove dir
+    remove_tmp_dir(str(tmp_folder)) 
+    
+    # assert dir was removed
+    assert not tmp_folder.exists() 
