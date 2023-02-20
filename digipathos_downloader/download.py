@@ -222,7 +222,10 @@ def unpack_zip(filename: str,
             zip_contents.extractall(class_dir)
     except IOError as e:
         print(f"{e}\nSkipping unpacking of {filename}")
-        return file_to_be_extracted
+        return filename
+    except BaseException as e:
+        print(f"The following error occured:{e}")
+        return filename
 
 def unpack_zips(verbose):
     if verbose:
