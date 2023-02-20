@@ -1,4 +1,5 @@
 from pathlib import Path
+import shutil
 
 import pytest
 
@@ -7,6 +8,7 @@ from digipathos_downloader.download import (create_basic_folder_structure,
                                             download_zip, 
                                             download_zips, 
                                             fetch_zips_table, 
+                                            unpack_zip,
                                             validate_downloads)
 
 
@@ -198,3 +200,41 @@ def test_validate_downloads_null_files(short_zips_table):
     for file in tmp_folder.iterdir():
         file.unlink()
     tmp_folder.rmdir()
+
+def test_files_extraction(short_zips_table):
+    """validates it is possible to extract a zip
+    """
+    # create tmp folder
+    plant_disease_folder = Path(__name__).absolute().parent / 'plant-disease-db'
+    plant_disease_folder.mkdir()
+    tmp_folder = Path(__name__).absolute().parent / 'tmp'
+    tmp_folder.mkdir()
+
+    # gets the metadata from one sample
+    sample = short_zips_table[0]
+
+    # download that sample
+    ok_url = download_zip(sample["bsLink"], 
+                        sample["name"],
+                        str(tmp_folder))   
+    
+    # get downloaded file name
+    downloaded_files = list(tmp_folder.iterdir())
+
+    ok_unzip = unpack_zip(str(downloaded_files[0].name),
+                          str(plant_disease_folder),
+                          str(tmp_folder)) 
+
+    # if unzip is ok, return none
+    assert ok_unzip == None
+
+    # assert the folder was successfully created
+    extracted_folder = plant_disease_folder / downloaded_files[0].name[:-4]
+    assert extracted_folder.exists()
+
+    # assert the files were unzipped 
+    extracted_files = list(extracted_folder.iterdir())
+    assert len(extracted_files) > 0
+
+    shutil.rmtree(tmp_folder)
+    shutil.rmtree(plant_disease_folder)
