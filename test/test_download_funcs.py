@@ -9,6 +9,7 @@ from digipathos_downloader.download import (create_basic_folder_structure,
                                             download_zips, 
                                             fetch_zips_table, 
                                             unpack_zip,
+                                            unpack_zips,
                                             validate_downloads)
 
 
@@ -151,6 +152,10 @@ def test_no_zips_downloaded(broken_zips_table):
     assert len(not_downloaded) == 3    
 
 def test_validate_downloads(short_zips_table):
+    """_summary_
+
+    Args:
+        short_zips_table (list): mock fetch_zips return.    """
     # create tmp folder
     tests_folder = Path(__name__).absolute().parent / 'test'
     tmp_folder = tests_folder / 'tmp'    
@@ -177,6 +182,11 @@ def test_validate_downloads(short_zips_table):
     tmp_folder.rmdir()
 
 def test_validate_downloads_null_files(short_zips_table):
+    """_summary_
+
+    Args:
+        short_zips_table (list): mock fetch_zips return.
+    """
 
     # create tmp folder
     tests_folder = Path(__name__).absolute().parent / 'test'
@@ -203,6 +213,9 @@ def test_validate_downloads_null_files(short_zips_table):
 
 def test_files_extraction(short_zips_table):
     """validates it is possible to extract a zip
+
+    Args:
+        short_zips_table (list): mock fetch_zips return.
     """
     # create tmp folder
     plant_disease_folder = Path(__name__).absolute().parent / 'plant-disease-db'
@@ -269,3 +282,72 @@ def test_unpack_fails():
 
     shutil.rmtree(plant_disease_folder)
     shutil.rmtree(tmp_folder)
+
+def test_unpack_several_zips(short_zips_table):
+    """assert unpacking works for all the zips. 
+
+    Args:
+        short_zips_table (list): mock fetch_zips return.
+    """
+
+    # create tmp folder
+    plant_disease_folder = Path(__name__).absolute().parent / 'plant-disease-db'
+    plant_disease_folder.mkdir()
+    tmp_folder = Path(__name__).absolute().parent / 'tmp'
+    tmp_folder.mkdir()
+
+    # download samples
+    not_downloaded = download_zips(short_zips_table,
+                                    str(tmp_folder))
+
+    failed_unpack = unpack_zips(str(tmp_folder),
+                                str(plant_disease_folder),
+                                True)
+
+    # assert all files are successfully unpacked
+    assert failed_unpack == None
+
+    # assert all three zips were unpacked
+    extracted_folders = list(plant_disease_folder.iterdir())
+    assert len(extracted_folders) == 3
+
+    # assert all unpacked folders are non empty
+    for folder in extracted_folders:
+        extracted = list(folder.iterdir())
+        assert len(extracted) > 0
+
+    # clean the mess
+    shutil.rmtree(plant_disease_folder)
+    shutil.rmtree(tmp_folder)
+
+def test_unzip_samples_fails(mocker):
+
+    # create tmp folder
+    plant_disease_folder = Path(__name__).absolute().parent / 'test' / 'plant-disease-db'
+    plant_disease_folder.mkdir()
+    tmp_folder = Path(__name__).absolute().parent / 'test' / 'tmp'
+    tmp_folder.mkdir()
+
+    # create fake zips
+    fake_1 = tmp_folder / 'a.zip'
+    fake_2 = tmp_folder / 'b.zip'
+    fake_3 = tmp_folder / 'c.zip'
+    fake_1.touch()
+    fake_2.touch()
+    fake_3.touch()
+
+    # mocks unpack_zip return as a broken unzip
+    mocker.patch("digipathos_downloader.download.unpack_zip", return_value='mock.zip')
+
+    # run unpack_zips()
+    failed_unpack = unpack_zips(str(tmp_folder),
+                                str(plant_disease_folder),
+                                True)
+    
+    # assert unpack_zips return a non-empty list
+    assert type(failed_unpack) == list
+    assert len(failed_unpack) == 3
+
+    # clean the mess
+    shutil.rmtree(plant_disease_folder)
+    shutil.rmtree(tmp_folder)    
