@@ -51,7 +51,7 @@ download.get_dataset(str(dataset_dir),
                      str(tmp_dir))
 ```
 
-This must be suficient to download the dataset to ```dataset_dir```.
+This will be sufficient to download the dataset to ```dataset_dir```.
 
 More references regarding the use of the other functions are found in the [tests folder](./tests/) and in the functions docstrings.
 
