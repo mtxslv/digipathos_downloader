@@ -8,6 +8,7 @@ from digipathos_downloader.download import (create_basic_folder_structure,
                                             download_zip, 
                                             download_zips, 
                                             fetch_zips_table, 
+                                            get_dataset,
                                             remove_tmp_dir,
                                             unpack_zip,
                                             unpack_zips,
@@ -371,3 +372,32 @@ def test_remove_tmp_dir():
     
     # assert dir was removed
     assert not tmp_folder.exists() 
+
+def test_get_dataset(mocker,short_zips_table):
+    """Assert get_dataset correctly installs the dataset.
+
+    Args:
+        mocker (_type_): pytest mocker obj.
+        short_zips_table (_type_): fixture mocking fetch_zips_table return.
+    """
+    # define dataset_dir and tmp_dir
+    test_folder = Path(__name__).absolute().parent / 'test' 
+    dataset_dir = test_folder / 'dataset_dir'
+    tmp_dir = test_folder / 'tmp'
+
+    # mock fetch_zips_table return
+    mocker.patch("digipathos_downloader.download.fetch_zips_table", return_value=short_zips_table)
+    get_dataset(str(dataset_dir),
+                str(tmp_dir),
+                "cropped",
+                False)
+    
+    # assert unziped downloads folders are not empty
+    downloaded_folders = list(dataset_dir.iterdir())
+    for fldr in downloaded_folders:
+        list_of_files = list(fldr.iterdir())
+        assert len(list_of_files) > 0 
+    
+    # clean the mess
+    shutil.rmtree(str(dataset_dir))
+    
