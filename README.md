@@ -39,7 +39,7 @@ poetry add git+https://github.com/mtxslv/digipathos_downloader
 Once you have downloaded the project, you can get the dataset using:
 
 ```python
-from pathlib import path
+from pathlib import Path
 from digipathos_downloader import download
 
 my_folder = Path(__name__).absolute().parent # this is the folder you are in
